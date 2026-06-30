@@ -1,0 +1,613 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>KAMIKAWA RIDE MAP｜上川町まちなかMTBライド</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Zen+Kaku+Gothic+New:wght@400;500;700;900&family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#1c2b24;--paper:#f3efe3;--paper2:#ece6d4;--moss:#3f6b4f;--moss-d:#2c4d39;
+    --snow:#fbfaf6;--signal:#e0533a;--gold:#e0a83d;--line:#cfc6ad;--shadow:rgba(28,43,36,.18);
+  }
+  *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+  html{scroll-behavior:smooth}
+  body{font-family:"Zen Kaku Gothic New",sans-serif;background:var(--paper);color:var(--ink);
+    -webkit-text-size-adjust:100%}
+  .page{max-width:480px;margin:0 auto;background:var(--paper);position:relative;
+    box-shadow:0 0 60px rgba(0,0,0,.12)}
+
+  /* ===== shared section header ===== */
+  .sec-eyebrow{font-family:"Bricolage Grotesque";font-weight:800;letter-spacing:.18em;
+    font-size:10px;color:var(--moss);text-transform:uppercase;display:flex;align-items:center;gap:8px}
+  .sec-eyebrow::before{content:attr(data-no);font-size:11px;background:var(--moss);color:#fff;
+    width:20px;height:20px;border-radius:6px;display:grid;place-items:center;flex:0 0 auto}
+  .sec-title{font-size:22px;font-weight:900;margin:8px 0 4px;letter-spacing:.01em}
+  .sec-sub{font-size:12.5px;color:#6c715f;line-height:1.6}
+  .sec-head{padding:30px 20px 16px}
+
+  /* ===== hero / masthead ===== */
+  .masthead{padding:26px 20px 8px;background:linear-gradient(180deg,#eef2e6,var(--paper))}
+  .brand{display:flex;align-items:center;gap:11px}
+  .brand .badge{width:46px;height:46px;border-radius:13px;flex:0 0 auto;background:var(--moss);
+    color:var(--snow);display:grid;place-items:center;box-shadow:0 4px 12px var(--shadow);transform:rotate(-4deg)}
+  .brand .badge svg{width:26px;height:26px}
+  .brand .eyebrow{font-family:"Bricolage Grotesque";font-weight:800;letter-spacing:.18em;
+    font-size:10px;color:var(--moss);text-transform:uppercase}
+  .brand h1{font-size:21px;font-weight:900;margin-top:3px;line-height:1.2}
+  .masthead .lede{font-size:13px;color:#5a6053;line-height:1.8;margin-top:14px}
+  .jump{display:flex;gap:8px;margin-top:16px;flex-wrap:wrap}
+  .jump a{font-size:11.5px;font-weight:700;color:var(--moss-d);background:#fff;border:1.5px solid var(--line);
+    border-radius:50px;padding:7px 13px;text-decoration:none;display:inline-flex;align-items:center;gap:5px;
+    transition:background .15s,border-color .15s}
+  .jump a:hover{background:var(--moss);color:#fff;border-color:var(--moss)}
+  .jump a b{font-family:"Bricolage Grotesque";font-weight:800}
+
+  /* ===== SECTION 1 : map + numbers only ===== */
+  .s1{padding-bottom:8px}
+  .s1-mapbox{margin:0 20px;border-radius:18px;overflow:hidden;background:#e9efe2;
+    box-shadow:0 6px 22px var(--shadow);position:relative}
+  .s1-mapbox img{display:block;width:100%;height:auto}
+  .s1-mapbox svg{position:absolute;inset:0;width:100%;height:100%}
+  .s1 .numdot{font-family:"Bricolage Grotesque";font-weight:800;fill:#fff;font-size:19px;
+    text-anchor:middle;dominant-baseline:central}
+  .s1 .numdot.sg{font-size:13px}
+  .s1 .ring{fill:none;stroke:#fff;stroke-width:2.5}
+  .s1-cap{text-align:center;font-size:11.5px;color:#8b8f7e;margin:12px 20px 0}
+
+  /* ===== SECTION 2 : photo + number + desc list ===== */
+  .s2{background:#efeadd;padding-bottom:30px}
+  .s2-list{padding:4px 16px 0;display:flex;flex-direction:column;gap:14px}
+  .card{background:var(--snow);border-radius:18px;overflow:hidden;box-shadow:0 3px 14px var(--shadow);
+    display:flex;flex-direction:column}
+  .card-photo{position:relative;width:100%;aspect-ratio:16/9;overflow:hidden;background:#e9efe2}
+  .card-photo .illus{position:absolute;inset:0}
+  .card-photo .illus svg{width:100%;height:100%;display:block}
+  .ph-tag{position:absolute;bottom:10px;right:10px;font-size:9.5px;font-weight:700;letter-spacing:.04em;
+    color:#5a6053;background:rgba(255,255,255,.82);border-radius:50px;padding:4px 9px}
+  .card-no{position:absolute;top:12px;left:12px;width:38px;height:38px;border-radius:11px;
+    display:grid;place-items:center;font-family:"Bricolage Grotesque";font-weight:800;color:#fff;
+    font-size:20px;box-shadow:0 3px 8px rgba(0,0,0,.22)}
+  .card-no.sg{font-size:13px}
+  .card-cat{position:absolute;top:16px;right:12px;font-family:"Bricolage Grotesque";font-weight:800;
+    font-size:9px;letter-spacing:.12em;text-transform:uppercase;padding:5px 9px;border-radius:50px;
+    background:rgba(255,255,255,.92);color:var(--moss-d)}
+  .card-bd{padding:14px 16px 16px}
+  .card-bd h3{font-size:17px;font-weight:900;line-height:1.25}
+  .card-bd .read{font-size:10px;color:#9aa089;font-weight:500;letter-spacing:.08em;margin-top:2px}
+  .card-bd .copy{font-size:13px;font-weight:700;color:var(--moss-d);line-height:1.6;margin:9px 0 0;
+    padding-left:11px;border-left:3px solid var(--gold)}
+  .card-bd .desc{font-size:12.5px;line-height:1.8;color:#42493d;margin-top:10px}
+  .feat{list-style:none;margin:12px 0 0;display:flex;flex-direction:column;gap:9px}
+  .feat li{display:flex;flex-direction:column;gap:1px;padding-left:15px;position:relative}
+  .feat li::before{content:"";position:absolute;left:0;top:6px;width:7px;height:7px;border-radius:2px;
+    background:var(--gold);transform:rotate(45deg)}
+  .feat li b{font-size:12.5px;font-weight:700;color:var(--ink);line-height:1.45}
+  .feat li span{font-size:11.5px;line-height:1.65;color:#5a6053}
+  .card-tags{display:flex;flex-wrap:wrap;gap:6px;margin-top:14px}
+  .card-tags .t{font-size:10.5px;color:#4f5648;background:var(--paper);border-radius:50px;padding:5px 10px;font-weight:500}
+  .card-tags .t::before{content:"#";color:var(--moss);font-weight:700;margin-right:1px}
+
+  /* ===== SECTION 3 : interactive map (existing) ===== */
+  .s3{background:var(--ink);padding:0}
+  .s3-head{padding:30px 20px 14px}
+  .s3-head .sec-eyebrow{color:#9cc3a8}
+  .s3-head .sec-eyebrow::before{background:#9cc3a8;color:var(--ink)}
+  .s3-head .sec-title{color:#fff}
+  .s3-head .sec-sub{color:#aab4a3}
+  .stagewrap{position:relative;height:78vh;min-height:520px;overflow:hidden;background:#e9efe2;
+    touch-action:none}
+  .stage{position:absolute;inset:0;cursor:grab}
+  .stage:active{cursor:grabbing}
+  .canvas{position:absolute;top:50%;left:50%;will-change:transform}
+  .mapwrap{position:relative;display:block}
+  .mapimg{display:block;width:1502px;height:1404px;user-select:none;-webkit-user-drag:none;pointer-events:none}
+  .pinsvg{position:absolute;inset:0;width:100%;height:100%;overflow:visible}
+  .pin{cursor:pointer}
+  .pin .disc{transition:filter .18s}
+  .pin:hover .disc,.pin.active .disc{filter:drop-shadow(0 5px 7px rgba(28,43,36,.4))}
+  .pin .num{font-family:"Bricolage Grotesque";font-weight:800;fill:#fff;font-size:19px;
+    text-anchor:middle;dominant-baseline:central;pointer-events:none}
+  .pin.start .num{font-size:13px}
+  .pin .ring{fill:none;stroke:#fff;stroke-width:2.5}
+  .pulse{transform-box:fill-box;transform-origin:center}
+  .pin.active .pulse{animation:pulse 1.6s ease-out infinite}
+  @keyframes pulse{0%{opacity:.5;transform:scale(1)}100%{opacity:0;transform:scale(2.6)}}
+
+  .zoomctl{position:absolute;right:12px;bottom:14px;z-index:5;display:flex;flex-direction:column;gap:8px}
+  .zoomctl button{width:42px;height:42px;border:none;border-radius:12px;background:var(--snow);
+    color:var(--ink);font-size:21px;font-weight:700;box-shadow:0 4px 12px var(--shadow);cursor:pointer;
+    line-height:1;display:grid;place-items:center;transition:transform .12s}
+  .zoomctl button:active{transform:scale(.92)}
+  .zoomctl button.locate{color:var(--moss)}
+  .s3-legend{position:absolute;left:12px;bottom:14px;z-index:5;background:rgba(251,250,246,.93);
+    backdrop-filter:blur(6px);border-radius:13px;padding:10px 12px;box-shadow:0 4px 14px var(--shadow);
+    font-size:11px;line-height:1.7;color:#4a5145}
+  .s3-legend b{font-size:11.5px;color:var(--ink);display:block;margin-bottom:3px}
+  .s3-legend .row{display:flex;align-items:center;gap:7px}
+  .s3-legend .dot{width:13px;height:13px;border-radius:50%;flex:0 0 auto}
+
+  .s3-reel{background:var(--ink);padding:12px}
+  .reel-scroll{display:flex;gap:9px;overflow-x:auto;scroll-snap-type:x mandatory;scrollbar-width:none}
+  .reel-scroll::-webkit-scrollbar{display:none}
+  .chip{scroll-snap-align:start;flex:0 0 auto;display:flex;align-items:center;gap:8px;background:#26352d;
+    border:1.5px solid transparent;border-radius:13px;padding:8px 12px 8px 8px;cursor:pointer;transition:border-color .15s,transform .12s}
+  .chip:active{transform:scale(.97)}
+  .chip.active{border-color:#9cc3a8}
+  .chip .cn{width:28px;height:28px;border-radius:9px;display:grid;place-items:center;
+    font-family:"Bricolage Grotesque";font-weight:800;color:#fff;font-size:15px;flex:0 0 auto}
+  .chip .cnm{font-size:11px}
+  .chip .ct b{font-size:12.5px;font-weight:700;white-space:nowrap;display:block;color:#f0efe7}
+  .chip .ct span{font-size:10px;color:#9aa492;white-space:nowrap}
+
+  /* ===== SECTION 4 : survey → coupon ===== */
+  .jump a.jump-rew{background:#e0533a;color:#fff;border-color:#e0533a}
+  .jump a.jump-rew:hover{background:#c23e29}
+  .s4{background:linear-gradient(180deg,#fff1ec,#fbe6df);padding:34px 20px 38px}
+  .s4-inner{max-width:440px;margin:0 auto}
+  .s4-eyebrow{font-family:"Bricolage Grotesque";font-weight:800;letter-spacing:.18em;font-size:10px;
+    color:#c23e29;text-transform:uppercase;text-align:center}
+  .s4-title{font-size:23px;font-weight:900;text-align:center;margin:8px 0 0;line-height:1.35;color:#2c1714}
+  .s4-title span{color:#c23e29;display:inline-block;margin-top:3px}
+  .s4-lede{font-size:13px;line-height:1.85;color:#6a4a44;text-align:center;margin:14px 4px 0}
+  .s4-lede b{color:#c23e29;font-weight:700}
+  .s4-steps{margin-top:22px;display:flex;flex-direction:column;align-items:stretch;gap:10px}
+  .s4-step{display:flex;align-items:flex-start;gap:12px;background:#fff;border-radius:15px;padding:14px 15px;
+    box-shadow:0 3px 12px rgba(192,57,43,.12)}
+  .s4-num{width:30px;height:30px;flex:0 0 auto;border-radius:9px;background:#e0533a;color:#fff;
+    font-family:"Bricolage Grotesque";font-weight:800;font-size:16px;display:grid;place-items:center}
+  .s4-txt b{font-size:14.5px;font-weight:900;color:#2c1714;display:block;line-height:1.3}
+  .s4-txt span{font-size:12px;color:#7a5a54;line-height:1.6;display:block;margin-top:3px}
+  .s4-arrow{display:grid;place-items:center;color:#e0a08f;margin:-2px 0}
+  .s4-btn{display:flex;align-items:center;justify-content:center;gap:9px;text-decoration:none;
+    border-radius:50px;padding:15px;font-weight:900;font-size:15px;letter-spacing:.02em;
+    transition:transform .12s,box-shadow .12s}
+  .s4-btn:active{transform:translateY(2px)}
+  .s4-btn-form{background:#fff;color:#c23e29;border:2px solid #e0533a;box-shadow:0 3px 0 #e0a08f}
+  .s4-btn-form:active{box-shadow:0 1px 0 #e0a08f}
+  .s4-btn-coupon{background:linear-gradient(135deg,#e0533a,#c23e29);color:#fff;box-shadow:0 4px 0 #922b21}
+  .s4-btn-coupon:active{box-shadow:0 1px 0 #922b21}
+  .s4-btn-coupon .apple{font-size:19px}
+  .s4-note{font-size:10.5px;color:#a08079;text-align:center;line-height:1.7;margin-top:16px}
+
+
+  .foot .up{display:inline-flex;align-items:center;gap:6px;color:#cfe0d4;font-weight:700;text-decoration:none;
+    border:1.5px solid #3a4f42;border-radius:50px;padding:9px 16px;margin-bottom:16px}
+
+  /* ===== detail sheet (section 3) ===== */
+  .scrim{position:fixed;inset:0;z-index:50;background:rgba(28,43,36,.45);opacity:0;pointer-events:none;transition:opacity .25s}
+  .scrim.open{opacity:1;pointer-events:auto}
+  .sheet{position:fixed;left:50%;transform:translate(-50%,110%);bottom:0;z-index:60;width:100%;max-width:480px;
+    background:var(--snow);border-radius:24px 24px 0 0;transition:transform .34s cubic-bezier(.4,0,.2,1);
+    max-height:88dvh;display:flex;flex-direction:column;box-shadow:0 -8px 40px rgba(28,43,36,.3)}
+  .sheet.open{transform:translate(-50%,0)}
+  .grab{width:42px;height:5px;border-radius:3px;background:#d7d1bf;margin:10px auto 0;flex:0 0 auto;cursor:pointer}
+  .sheet-hd{position:relative;padding:14px 20px 0}
+  .sheet-cat{display:inline-flex;font-family:"Bricolage Grotesque";font-weight:800;font-size:10px;
+    letter-spacing:.16em;text-transform:uppercase;padding:5px 10px;border-radius:50px}
+  .sheet-no{position:absolute;right:20px;top:8px;font-family:"Bricolage Grotesque";font-weight:800;
+    font-size:46px;color:var(--paper2);line-height:1}
+  .sheet h2{font-size:23px;font-weight:900;margin:9px 0 2px}
+  .sheet .reading{font-size:11px;color:#9aa089;font-weight:500;letter-spacing:.08em}
+  .sheet .copy{font-size:14.5px;font-weight:700;color:var(--moss-d);line-height:1.6;margin:12px 0 0;
+    padding-left:13px;border-left:3px solid var(--gold)}
+  .sheet-bd{overflow-y:auto;padding:4px 20px 24px}
+  .sheet .lead{font-size:14px;line-height:1.85;color:#3a4138;margin-top:14px}
+  .tags{display:flex;flex-wrap:wrap;gap:7px;margin-top:16px}
+  .tag{font-size:11.5px;color:#4f5648;background:var(--paper);border-radius:50px;padding:6px 11px;font-weight:500}
+  .tag::before{content:"#";color:var(--moss);font-weight:700;margin-right:1px}
+  .sheet-nav{display:flex;gap:10px;margin-top:20px;padding-top:16px;border-top:1px solid var(--line)}
+  .sheet-nav button{flex:1;border:none;border-radius:13px;padding:13px;font-family:inherit;font-weight:700;
+    font-size:13px;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px;transition:transform .1s}
+  .sheet-nav button:active{transform:scale(.97)}
+  .nav-prev{background:var(--paper);color:#4f5648}
+  .nav-next{background:var(--moss);color:#fff}
+  .nav-prev:disabled{opacity:.4}
+  .next-name{font-weight:500;opacity:.85;font-size:11px;max-width:88px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+
+  @media (prefers-reduced-motion:reduce){*{animation-duration:.001s!important;transition-duration:.08s!important}}
+</style>
+</head>
+<body>
+<div class="page">
+
+  <!-- ===== MASTHEAD ===== -->
+  <header class="masthead">
+    <div class="brand">
+      <div class="badge">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="5.5" cy="17.5" r="3.5"/><circle cx="18.5" cy="17.5" r="3.5"/>
+          <path d="M15 17.5 L12 9 H8 M12 9 L14.5 6 H17 M9 6 H12.5"/></svg>
+      </div>
+      <div>
+        <div class="eyebrow">Kamikawa Town · Ride Map</div>
+        <h1>まちなか巡礼ライド</h1>
+      </div>
+    </div>
+    <p class="lede">山一食堂をスタート＆ゴールに、上川町の16スポットを自転車で巡る約束のルート。</p>
+    <nav class="jump">
+      <a href="#sec1"><b>01</b> ルートマップ</a>
+      <a href="#sec2"><b>02</b> スポット一覧</a>
+      <a href="#sec3"><b>03</b> 巡るマップ</a>
+      <a href="#sec4" class="jump-rew"><b>🍎</b> 50円引き</a>
+    </nav>
+  </header>
+
+  <!-- ===== SECTION 1 : MAP + NUMBERS ONLY ===== -->
+  <section class="s1" id="sec1">
+    <div class="sec-head">
+      <div class="sec-eyebrow" data-no="1">The Route</div>
+      <h2 class="sec-title">ルートマップ</h2>
+    </div>
+    <div class="s1-mapbox">
+      <img alt="上川町まちなかライドマップ" src="./basemap.png">
+      <svg viewBox="0 0 1502 1404" xmlns="http://www.w3.org/2000/svg" id="s1pins"></svg>
+    </div>
+  </section>
+
+  <!-- ===== SECTION 2 : PHOTO + NUMBER + DESC ===== -->
+  <section class="s2" id="sec2">
+    <div class="sec-head">
+      <div class="sec-eyebrow" data-no="2">The Spots</div>
+      <h2 class="sec-title">スポット一覧</h2>
+      <p class="sec-sub">①から順に、それぞれの場所の物語を。写真とあわせて、訪れる場所について知ろう。</p>
+    </div>
+    <div class="s2-list" id="s2list"></div>
+  </section>
+
+  <!-- ===== SECTION 3 : INTERACTIVE MAP ===== -->
+  <section class="s3" id="sec3">
+    <div class="s3-head">
+      <div class="sec-eyebrow" data-no="3">Ride It</div>
+      <h2 class="sec-title">巡るマップ</h2>
+      <p class="sec-sub">ピンをタップすると解説が開きます。「次へ」で①→⑯を巡礼するように。</p>
+    </div>
+    <div class="stagewrap">
+      <div class="stage" id="stage">
+        <div class="canvas" id="canvas">
+          <div class="mapwrap">
+            <img class="mapimg" id="mapimg" alt="上川町まちなかライドマップ" src="./basemap.png">
+            <svg class="pinsvg" viewBox="0 0 1502 1404" xmlns="http://www.w3.org/2000/svg">
+              <g id="pinLayer"></g>
+            </svg>
+          </div>
+        </div>
+      </div>
+      <div class="s3-legend">
+        <b>推奨ルート</b>
+        <div class="row"><span class="dot" style="background:#e0533a"></span>START &amp; GOAL（①）</div>
+        <div class="row" style="margin-top:4px"><span class="dot" style="background:#e0a83d"></span>立寄りグルメ</div>
+      </div>
+      <div class="zoomctl">
+        <button id="zin" aria-label="拡大">＋</button>
+        <button id="zout" aria-label="縮小">－</button>
+        <button id="fit" class="locate" aria-label="全体表示">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M4 9V5a1 1 0 011-1h4M20 9V5a1 1 0 00-1-1h-4M4 15v4a1 1 0 001 1h4M20 15v4a1 1 0 01-1 1h-4"/></svg>
+        </button>
+      </div>
+    </div>
+    <div class="s3-reel"><div class="reel-scroll" id="reel"></div></div>
+  </section>
+
+  <!-- ===== SECTION 4 : SURVEY → COUPON ===== -->
+  <section class="s4" id="sec4">
+    <div class="s4-inner">
+      <div class="s4-eyebrow">Reward · ご褒美</div>
+      <h2 class="s4-title">アンケートに答えて<br><span>アップルパイ 50円引き</span></h2>
+      <p class="s4-lede">ライドを楽しんだら、かんたんなアンケートにご協力ください。回答した方は、<b>2りんかん祭り（7/11）</b>で特別出店する<b>ナカヤ菓子店のアップルパイ</b>を <b>50円引き</b>で購入できます。</p>
+
+      <div class="s4-steps">
+        <div class="s4-step">
+          <div class="s4-num">1</div>
+          <div class="s4-txt">
+            <b>アンケートに回答する</b>
+            <span>所要1〜2分。ライドの感想を聞かせてください。</span>
+          </div>
+        </div>
+        <a class="s4-btn s4-btn-form" href="https://forms.gle/rTx33LHCfCJE6uAL9" target="_blank" rel="noopener">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/></svg>
+          アンケートに答える
+        </a>
+
+        <div class="s4-arrow">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12l7 7 7-7"/></svg>
+        </div>
+
+        <div class="s4-step">
+          <div class="s4-num">2</div>
+          <div class="s4-txt">
+            <b>クーポンをお店で見せる</b>
+            <span>下のボタンでクーポンを開き、ナカヤ菓子店のスタッフに画面を見せてください。</span>
+          </div>
+        </div>
+        <a class="s4-btn s4-btn-coupon" href="https://gist.githubusercontent.com/Hannnnnnnnnnnaa/27be1886f57948252d6ab2b5e9088350/raw/coupon.html" target="_blank" rel="noopener">
+          <span class="apple">🍎</span> 50円引きクーポンを開く
+        </a>
+      </div>
+
+      <p class="s4-note">※ クーポンは端末ごとに1回のみ有効／有効期限 2026年7月11日（土）まで／他割引との併用不可</p>
+    </div>
+  </section>
+
+  <footer class="foot">
+    <a class="up" href="#sec1">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M12 19V5M5 12l7-7 7 7"/></svg>
+      最初にもどる
+    </a>
+    <div>まちなか巡礼ライド｜上川町<br>16 spots · Kamikawa, Hokkaido</div>
+  </footer>
+</div>
+
+<!-- detail sheet -->
+<div class="scrim" id="scrim"></div>
+<div class="sheet" id="sheet">
+  <div class="grab" id="grab"></div>
+  <div class="sheet-hd">
+    <div class="sheet-no" id="sNo">01</div>
+    <span class="sheet-cat" id="sCat">CATEGORY</span>
+    <h2 id="sName">名称</h2>
+    <div class="reading" id="sRead"></div>
+    <p class="copy" id="sCopy"></p>
+  </div>
+  <div class="sheet-bd">
+    <p class="lead" id="sLead"></p>
+    <div class="tags" id="sTags"></div>
+    <div class="sheet-nav">
+      <button class="nav-prev" id="prevBtn">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M15 18l-6-6 6-6"/></svg>前へ</button>
+      <button class="nav-next" id="nextBtn">
+        <span>次へ <span class="next-name" id="nextName"></span></span>
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M9 18l6-6-6-6"/></svg></button>
+    </div>
+  </div>
+</div>
+
+<script>
+const IMW=1502, IMH=1404;
+const CAT={
+  start:{label:"START & GOAL",c:"#e0533a",bg:"#fbe6e1"},
+  gourmet:{label:"GOURMET / 立寄り",c:"#e0a83d",bg:"#fbf0d8"},
+  culture:{label:"CULTURE / 文化",c:"#9163b6",bg:"#efe6f6"},
+  learn:{label:"LEARNING / 学び",c:"#3f7bb3",bg:"#e2edf6"},
+  life:{label:"TOWN LIFE / 暮らし",c:"#3f6b4f",bg:"#e3efe6"},
+  nature:{label:"NATURE / 自然",c:"#5a8a3c",bg:"#e9f1de"},
+  care:{label:"WELLNESS / 健康",c:"#2f9c8e",bg:"#dcf0ed"},
+};
+const SPOTS=[
+ {n:1,name:"山一食堂",read:"YAMAICHI SHOKUDO",cat:"start",x:567,y:725,
+  copy:"すべてはこの一杯から。出発と帰着を見守る、町の食堂。",
+  lead:"今日のライドのスタート＆ゴール。ペダルを踏み出す前に、ルートを頭に入れておきましょう。",
+  tags:["スタート地点","町の食堂","集合場所"]},
+ {n:2,name:"南町公園",read:"MINAMIMACHI PARK",cat:"nature",x:712,y:768,
+  copy:"芝生の上で、今日の地図を広げよう。",
+  lead:"走り出す前のレクチャースポット。広い芝生でルートの確認とウォームアップを。木陰のベンチで地図を広げれば、これから巡る町の全体像が見えてきます。ここで安全確認をしてから、いざ出発。",
+  tags:["事前レクチャー","ウォームアップ","芝生広場"]},
+ {n:3,name:"いきいきセンターたいせつの絆",read:"TAISETSU-NO-KIZUNA",cat:"care",x:848,y:832,
+  copy:"旅人も町民も、温かいお湯で心を通わせる福祉のオアシス。",
+  lead:"健康増進と多世代交流の拠点。人気の温浴施設では、旅の汗を流しながら地元の人と肩を並べてひと息つけます。バリアフリー設計で誰もが心と体をリフレッシュできる、町の“ほっとする”場所。",
+  tags:["温浴施設","多世代交流","バリアフリー"]},
+ {n:4,name:"上川町役場",read:"TOWN HALL",cat:"life",x:702,y:935,
+  copy:"親切な暮らしの支えと、先進的なまちづくりの司令塔。",
+  lead:"行政と暮らしのサポート窓口であり、ユニークなまちづくりの発信源。観光・移住の相談から防災まで、町の“新しい未来”を切り拓くアイデアがここから生まれます。",
+  tags:["まちづくり","観光案内","防災拠点"]},
+ {n:5,name:"BIG SNOW DRIVE-in",read:"BIG SNOW DRIVE-IN",cat:"gourmet",x:1190,y:1290,
+  copy:"レトロなスタンドを再生した、ふらり立ち寄るドライブイン。",
+  lead:"かつてのガソリンスタンドを生まれ変わらせた、アメリカンでお洒落なドライブイン。こだわりのコーヒーと軽食を片手に、SNS映えする空間でひと休み。旅人が自然と集まるコミュニティスペースです。",
+  tags:["ドライブイン","こだわりコーヒー","SNS映え"]},
+ {n:6,name:"ヤマイチカフェ",read:"YAMAICHI CAFE",cat:"gourmet",x:1290,y:1370,
+  copy:"森のキャンプ場に佇む、本格パスタとスイーツの隠れ家。",
+  lead:"緑に囲まれたキャンプ場併設の隠れ家カフェ。地元食材を活かしたこだわりのパスタとスイーツが自慢です。2026年7月からは新体制へアップデート予定——進化するメニューに期待しながら、森の癒やし空間でゆったり過ごして。",
+  tags:["隠れ家カフェ","地元食材パスタ","森の癒やし"]},
+ {n:7,name:"上川大雪酒造 緑丘蔵",read:"KAMIKAWA-TAISETSU SAKE",cat:"culture",x:1122,y:1370,
+  copy:"大雪山の天然水で、世界へ「飲まさる酒」を。",
+  lead:"2017年新設、大雪山の清らかな天然水と北海道産酒米にこだわる酒蔵。“ついつい飲んでしまう”を意味する道産子言葉「飲まさる酒」をコンセプトに、地方創生のロールモデルとして世界へ羽ばたきます。",
+  tags:["地酒","大雪山の天然水","地方創生"]},
+ {n:8,name:"上川高等学校",read:"KAMIKAWA HIGH SCHOOL",cat:"learn",x:1222,y:888,
+  copy:"「上川町学園構想」の集大成。世界へ視野をひらく高校。",
+  lead:"地域みらい留学や探究学習を通じて、グローバルな視野を養う高校。「上川町学園構想」の最終ステージとして、大雪山をまるごとフィールドにした学びを展開します。少人数ならではの手厚い指導が魅力。",
+  tags:["地域みらい留学","探究学習","学園構想"]},
+ {n:9,name:"上川小学校",read:"ELEMENTARY SCHOOL",cat:"learn",x:1035,y:820,
+  copy:"12年一貫教育のスタート。自然の中で学力と心を育む。",
+  lead:"「上川町学園構想」の出発点。豊かな自然の中で、確かな学力と豊かな心を育みます。給食費の完全無料化やICT教育の積極導入など、先進的な取り組みが満載です。",
+  tags:["給食費無料","ICT教育","体験活動"]},
+ {n:10,name:"認定こども園ここふれ",read:"KOKOFURE NURSERY",cat:"learn",x:1108,y:778,
+  copy:"木のぬくもりの中で、個性をのびのび育む。",
+  lead:"大雪山の自然に抱かれた、木のぬくもり溢れる幼保一体型こども園。大自然に囲まれた環境で、子どもたちの個性がのびのびと育ちます。地域との温かい交流が、この町の未来をやさしく支えています。",
+  tags:["木の園舎","幼保一体型","子育て支援"]},
+ {n:11,name:"上川中学校",read:"JUNIOR HIGH SCHOOL",cat:"learn",x:875,y:580,
+  copy:"小と高をつなぐ架け橋。自立心と協調性を養う。",
+  lead:"「上川町学園構想」の中核として、小学校と高校をつなぐ架け橋に。体験型学習や活発な部活動を通じて、自立心と協調性を育てます。給食費無料化などの手厚い支援も。",
+  tags:["学園構想の中核","体験型学習","部活動"]},
+ {n:12,name:"かみんぐホール",read:"COMING HALL",cat:"culture",x:785,y:585,
+  copy:"優れた音響に、町の文化が響きあう。",
+  lead:"優れた音響と設備を備えた多目的コミュニティホール。公民館と教育委員会を併設し、学びと交流を通じて町の文化を育てます。アクセスしやすい立地の、町の文化発信拠点です。",
+  tags:["多目的ホール","優れた音響","町民活動拠点"]},
+ {n:13,name:"大上川神社",read:"DAIKAMIKAWA SHRINE",cat:"culture",x:785,y:472,
+  copy:"静寂の境内で、大雪山の神々と祈りを見守る総鎮守。",
+  lead:"上川町の総鎮守。荘厳で静寂な境内は、大雪山との深いつながりを感じさせるパワースポットです。伝統行事の舞台として、地域の人々の祈りをそっと見守り続けてきました。",
+  tags:["総鎮守","パワースポット","伝統行事"]},
+ {n:14,name:"上川公園",read:"KAMIKAWA PARK",cat:"nature",x:470,y:302,
+  copy:"大雪山のパノラマと、四季の絶景が広がる高台。",
+  lead:"雄大な大雪山連峰のパノラマが一望できる、町民憩いの高台公園。春の桜をはじめ四季折々の絶景が広がります。走ってきた町なみと、その向こうの山々が一枚の絵のように。今日いちばんの展望スポット。",
+  tags:["大雪山パノラマ","桜の名所","展望の丘"]},
+ {n:15,name:"上川町総合体育館／グラウンド",read:"SPORTS COMPLEX",cat:"care",x:452,y:378,
+  copy:"大雪山の麓で、本格的な運動と健康づくりを。",
+  lead:"充実したトレーニング機器と広々としたアリーナ、屋外総合グラウンドを備えたスポーツ拠点。ナイター設備もあり、スポーツ合宿や大会のメッカとして親しまれています。ライダーの基地にも最適。",
+  tags:["トレーニング設備","ナイター","合宿のメッカ"]},
+ {n:16,name:"上川医療センター",read:"MEDICAL CENTER",cat:"care",x:100,y:540,
+  copy:"24時間365日、町民の健康と安心を支える地域医療の砦。",
+  lead:"24時間365日、温かい医療と親身な対応で町民の健康を支える地域医療の砦。幅広い診療に対応し、予防医療にも積極的に取り組みます。旅の締めくくりに、町の心臓部を見届けて。",
+  tags:["地域医療","24時間対応","予防医療"]},
+];
+
+const FEAT={3:[["町民の健康・福祉の拠点","リハビリや健康増進、介護予防をサポートする施設。"],["人気の温浴施設（銭湯）","町民や観光客、登山帰りの人々が癒やされるお風呂。"],["多世代の交流スペース","子どもからお年寄りまでが気軽に集い、おしゃべりできる場所。"],["バリアフリー設計","誰もが安全・快適に利用できるよう配慮された優しい館内。"],["心と体のリフレッシュ","温かいお湯と笑顔のスタッフが迎えてくれる、町のオアシス。"]],
+4:[["行政・暮らしのサポート窓口","町民の生活に密着した手続きや相談を行う中心地。"],["ユニークなまちづくりの発信源","移住促進や「大雪山大学」など、先進的な企画を主導。"],["親しみやすい窓口","アットホームで丁寧な対応が光る、開かれた役場。"],["防災・安全の司令塔","災害時の情報発信や、町民の安全を守る拠点。"],["観光・移住の案内役","上川町の魅力を外に向けてアピールするプロモーションのハブ。"]],
+5:[["レトロなガソリンスタンド跡","古いスタンドをリノベーションした、アメリカンな外観。"],["お洒落なドライブイン","ドライブの途中に気軽に立ち寄れる、旅のオアシス。"],["こだわりのコーヒーと軽食","淹れたてのコーヒーや、人気のソフトクリーム、ホットドッグ。"],["SNS映えするデザイン","ヴィンテージ感漂うインテリアや看板が、若者や旅人に大人気。"],["旅のコミュニティスペース","観光客と地元の人々が自然と交わる、温かい雰囲気。"]],
+6:[["運営体制のアップデート予定","2026年7月より運営者が変更となるため、新体制でのスタートに注目。"],["キャンプ場併設の隠れ家","上川ファミリーオートキャンプ村内に佇むおしゃれなカフェ。"],["地元食材を活かしたメニュー","上川町や北海道産の新鮮な食材を使ったランチを提供。"],["こだわりのパスタ＆スイーツ","見た目も美しく、味も本格的なフードメニューが人気。"],["緑に囲まれた癒やし空間","窓の外に広がる豊かな自然を眺めながら、ゆったり過ごせる。"]],
+7:[["2017年新設の酒蔵","日本酒業界で非常に珍しい、新規参入で誕生した酒蔵。"],["大雪山の清らかな天然水","万年雪から染み出す極上の仕込み水を使用。"],["北海道産酒米へのこだわり","彗星、吟風、きたしずくなど、道産米のみを使用。"],["「飲まさる酒」がコンセプト","ついついグラスが進んでしまう、食事に寄り添う純米酒。"],["地方創生のロールモデル","日本酒造りを通じて、上川町の魅力を全国へ発信。"]],
+8:[["「上川町学園構想」の最終ステージ","小中高の連携を活かし、自立した探究心と挑戦する力を育む。"],["地域みらい留学の実施","全国から生徒を受け入れ、多様な仲間と切磋琢磨する環境。"],["大雪山をフィールドにした学び","地域の自然や観光資源をテーマにした探究プログラムを展開。"],["少人数ならではの手厚い指導","生徒一人ひとりの進路や夢に寄り添う、質の高い教育体制。"],["地域社会との深い結びつき","町のイベントやボランティアに参加し、地域活性化に貢献。"]],
+9:[["12年間の一貫教育の土台","中学校・高校へのスムーズな接続を見据えた教育を実践。"],["給食費の完全無料化","町独自の充実した教育支援で、子育て世代を強力にバックアップ。"],["自然豊かな学習環境","大雪山の麓という恵まれた立地を活かし、のびのびと感性を養う。"],["ICT教育の積極的な導入","タブレット端末などを活用し、必要な基礎学力を育成。"],["地域に根ざした体験活動","地元の産業や歴史に触れる体験を通じ、郷土愛を深める。"]],
+10:[["木のぬくもり溢れる園舎","自然素材をふんだんに使った温かみのあるデザイン。"],["大自然に囲まれた環境","大雪山の麓ならではの豊かな自然を五感で感じる保育。"],["幼保一体型の認定こども園","教育と保育を一体的に提供し、子どもの育ちをサポート。"],["地域との温かい交流","町民や地域ボランティアとのふれあいイベントを重視。"],["充実した子育て支援","保護者の多様な働き方に寄り添う、町の子育ての拠点。"]],
+11:[["小・高を繋ぐ「学園構想」の架け橋","小学校での学びを深め、高校での探究学習へと繋げる。"],["体験型学習の充実","地域の自然や社会と関わり、自ら課題を見つけ解決する力を育む。"],["部活動や学校行事の活性化","仲間と協力し高め合う心を育成。"],["手厚い学習サポート","生徒一人ひとりの個性を尊重し、基礎から応用まで丁寧に対応。"],["給食費無料化などの支援","町からの温かいサポートのもとで安心して学べる。"]],
+12:[["多目的な文化交流施設","コンサート、演劇、講演会など幅広いイベントに対応。"],["優れた音響と設備","本格的な音響・照明設備を備え、質の高い演出が可能。"],["公民館・教育委員会の併設","地域の学びや行政手続きの窓口としても機能。"],["町民活動の拠点","サークル活動や地域会議、発表会などで日常的に活用。"],["アクセスしやすい立地","上川駅から徒歩圏内にあり、町民が集まりやすい。"]],
+13:[["上川町の総鎮守","地域の安全と繁栄を見守り続ける、歴史ある神社。"],["荘厳で静寂な境内","豊かな木々に囲まれ、一歩入ると神聖な空気が漂う。"],["大雪山との繋がり","山の神々への感謝と祈りを捧げる、信仰のシンボル。"],["伝統行事の舞台","秋の例大祭など、地域の人々が一体となるお祭りを開催。"],["パワースポット","旅の安全祈願に訪れる、隠れた名所。"]],
+14:[["大雪山連峰の絶景パノラマ","高台に位置し、雄大な山々と街並みを一望できる。"],["桜の名所","春には多くの桜が咲き誇り、町内外から花見客が訪れる。"],["四季折々の美しさ","新緑、桜、紅葉、雪景色と、1年を通じて楽しめる。"],["遊歩道と広場","ウォーキングや犬の散歩、子どもたちの遊び場として最適。"],["町民の憩いのオアシス","静かで落ち着いた時間が流れる、リフレッシュに最適な場所。"]],
+15:[["充実したトレーニング機器","初心者からアスリートまで満足できる本格的な器具が勢揃い。"],["広々としたアリーナ","全面1,400㎡のアリーナで、球技や各種インドアスポーツに対応。"],["充実の屋外総合グラウンド","軟式野球場2面、ソフトボール場4面、陸上競技場などを完備。"],["夜間も使えるナイター設備","仕事帰りや学校帰りのスポーツ活動をサポートする照明設備。"],["スポーツ合宿や大会のメッカ","町内外の部活動やクラブチームの合宿・大会に利用。"]],
+16:[["地域医療の安心拠点","町民の健やかな暮らしを支える中核的な医療機関。"],["幅広い診療に対応","内科や小児科をはじめ、日常の不調から救急までカバー。"],["アットホームな医療","患者一人ひとりに親身に寄り添う、温かい診療スタイル。"],["予防医療への取り組み","健康診断や各種相談を通じ、町民の健康寿命延伸に貢献。"],["他機関とのスムーズな連携","必要に応じて旭川市内などの高次医療機関と迅速に連携。"]]};
+
+/* ===== per-spot illustration (royalty-free, generated SVG scenes) ===== */
+const SCENE={
+ 1:{sky:"#fbe9d8",g1:"#e07a4a",g2:"#c85a2e",motif:'<g transform="translate(200,120)"><rect x="-70" y="-6" width="140" height="14" rx="7" fill="#7a3b1e"/><path d="M-58 -6 Q0 -52 58 -6 Z" fill="#e8c9a0"/><rect x="-46" y="-2" width="92" height="9" fill="#fff" opacity=".85"/><text x="0" y="6" font-size="13" text-anchor="middle" font-family="Zen Kaku Gothic New" font-weight="900" fill="#7a3b1e">山一</text><circle cx="0" cy="44" r="20" fill="#fff" opacity=".9"/><path d="M-13 44h26M-9 38c4 6 14 6 18 0" stroke="#e07a4a" stroke-width="2.4" fill="none" stroke-linecap="round"/><path d="M0 18c10 8 10 18 0 24c-10-6-10-16 0-24z" fill="#fff" opacity=".75"/></g>'},
+ 2:{sky:"#dff0e2",g1:"#7bbf6a",g2:"#4f9a55",motif:'<g transform="translate(200,150)"><ellipse cx="0" cy="22" rx="150" ry="30" fill="#5aa55f" opacity=".5"/><path d="M-90 22c0-40 12-58 12-58s12 18 12 58z" fill="#3f8a47"/><path d="M70 22c0-30 10-44 10-44s10 14 10 44z" fill="#4f9a55"/><circle cx="0" cy="-30" r="22" fill="#ffe89a"/><path d="M-150 24h300" stroke="#3f8a47" stroke-width="3" opacity=".4"/></g>'},
+ 3:{sky:"#d6eeeb",g1:"#46b3a4",g2:"#2f8d80",motif:'<g transform="translate(200,140)"><rect x="-95" y="0" width="190" height="56" rx="10" fill="#cfeae6"/><path d="M-95 0 L0 -42 L95 0 Z" fill="#46b3a4"/><circle cx="0" cy="-6" r="6" fill="#fff"/><path d="M-30 22c0 10 6 14 6 22M0 22c0 10 6 14 6 22M30 22c0 10 6 14 6 22" stroke="#fff" stroke-width="3" fill="none" stroke-linecap="round" opacity=".8"/><text x="0" y="44" font-size="20" text-anchor="middle" fill="#2f8d80" font-weight="900">♨</text></g>'},
+ 4:{sky:"#e3efe6",g1:"#5e8f6e",g2:"#3f6b4f",motif:'<g transform="translate(200,140)"><rect x="-80" y="-30" width="160" height="86" rx="6" fill="#cdddd2"/><rect x="-80" y="-30" width="160" height="18" fill="#3f6b4f"/><rect x="-66" y="2" width="24" height="54" fill="#9fc0ad"/><rect x="-30" y="2" width="24" height="54" fill="#9fc0ad"/><rect x="6" y="2" width="24" height="54" fill="#9fc0ad"/><rect x="42" y="2" width="24" height="54" fill="#9fc0ad"/><path d="M-90 -30 L0 -64 L90 -30 Z" fill="#5e8f6e"/></g>'},
+ 5:{sky:"#fdeecb",g1:"#e8a23a",g2:"#cf7d22",motif:'<g transform="translate(200,150)"><rect x="-78" y="-18" width="120" height="58" rx="6" fill="#f3ddae"/><rect x="-78" y="-18" width="120" height="16" fill="#cf7d22"/><rect x="48" y="-44" width="22" height="84" rx="4" fill="#e8a23a"/><circle cx="59" cy="-50" r="13" fill="#fff3d6"/><text x="59" y="-46" font-size="11" text-anchor="middle" font-weight="900" fill="#cf7d22">⛽</text><circle cx="-40" cy="48" r="13" fill="#444"/><circle cx="20" cy="48" r="13" fill="#444"/></g>'},
+ 6:{sky:"#e7f0d8",g1:"#86b95a",g2:"#5a8a3c",motif:'<g transform="translate(200,150)"><path d="M-60 40 L0 -36 L60 40 Z" fill="#5a8a3c"/><path d="M-40 40 L0 -8 L40 40 Z" fill="#86b95a"/><rect x="-8" y="14" width="16" height="26" fill="#6b4a2a"/><circle cx="64" cy="-20" r="16" fill="#f7e7c4"/><path d="M58 -20c0 8 12 8 12 0" stroke="#5a8a3c" stroke-width="2" fill="none"/><path d="M-72 44h150" stroke="#5a8a3c" stroke-width="3" opacity=".4"/></g>'},
+ 7:{sky:"#eee6f4",g1:"#9472b8",g2:"#6f4f97",motif:'<g transform="translate(200,140)"><rect x="-30" y="-34" width="60" height="90" rx="8" fill="#efe6f6"/><rect x="-30" y="-34" width="60" height="20" rx="8" fill="#6f4f97"/><ellipse cx="0" cy="-6" rx="16" ry="20" fill="#9472b8"/><text x="0" y="0" font-size="15" text-anchor="middle" fill="#fff" font-weight="900">酒</text><path d="M-66 30q14 -20 28 0M44 24q12 -16 24 0" stroke="#bfaed6" stroke-width="3" fill="none"/></g>'},
+ 8:{sky:"#e2edf6",g1:"#5a93cc",g2:"#3f7bb3",motif:'<g transform="translate(200,138)"><rect x="-86" y="-20" width="172" height="76" rx="6" fill="#d4e4f2"/><path d="M-96 -20 L0 -58 L96 -20 Z" fill="#3f7bb3"/><rect x="-10" y="-50" width="20" height="30" fill="#5a93cc"/><circle cx="0" cy="-44" r="5" fill="#fff"/><rect x="-64" y="6" width="26" height="50" fill="#a9cae8"/><rect x="-12" y="6" width="26" height="50" fill="#a9cae8"/><rect x="40" y="6" width="26" height="50" fill="#a9cae8"/></g>'},
+ 9:{sky:"#e2edf6",g1:"#6aa0d4",g2:"#3f7bb3",motif:'<g transform="translate(200,140)"><rect x="-80" y="-16" width="160" height="72" rx="6" fill="#d4e4f2"/><path d="M-90 -16 L0 -50 L90 -16 Z" fill="#3f7bb3"/><circle cx="0" cy="-30" r="9" fill="#ffe89a"/><rect x="-58" y="6" width="22" height="50" fill="#a9cae8"/><rect x="-18" y="6" width="22" height="50" fill="#a9cae8"/><rect x="22" y="6" width="22" height="50" fill="#a9cae8"/><path d="M-30 40 l8 -10 8 10" stroke="#6aa0d4" stroke-width="2.5" fill="none"/></g>'},
+ 10:{sky:"#e7f0e6",g1:"#7cae6f","g2":"#4f8a55",motif:'<g transform="translate(200,142)"><rect x="-72" y="-10" width="144" height="64" rx="14" fill="#e3d4ba"/><path d="M-84 -10 Q0 -56 84 -10 Z" fill="#a9824f"/><circle cx="-30" cy="20" r="11" fill="#fff"/><circle cx="0" cy="20" r="11" fill="#fff"/><circle cx="30" cy="20" r="11" fill="#fff"/><path d="M-30 20l3 4 5 -7M0 20l3 4 5 -7M30 20l3 4 5 -7" stroke="#7cae6f" stroke-width="2" fill="none" stroke-linecap="round"/></g>'},
+ 11:{sky:"#e2edf6",g1:"#5a93cc",g2:"#3f7bb3",motif:'<g transform="translate(200,140)"><rect x="-78" y="-16" width="156" height="72" rx="6" fill="#d4e4f2"/><path d="M-88 -16 L0 -52 L88 -16 Z" fill="#3f7bb3"/><rect x="-9" y="-46" width="18" height="30" fill="#5a93cc"/><rect x="-56" y="6" width="24" height="50" fill="#a9cae8"/><rect x="-8" y="6" width="24" height="50" fill="#a9cae8"/><rect x="40" y="6" width="24" height="50" fill="#a9cae8"/></g>'},
+ 12:{sky:"#eee6f4",g1:"#a07fc0",g2:"#7a5aa0",motif:'<g transform="translate(200,140)"><rect x="-84" y="-26" width="168" height="82" rx="8" fill="#efe6f6"/><path d="M-84 -26 Q0 -56 84 -26" fill="none" stroke="#7a5aa0" stroke-width="10"/><circle cx="0" cy="14" r="22" fill="#a07fc0"/><path d="M-8 6 l16 8 -16 8z" fill="#fff"/><path d="M-60 30c0 -8 0 -8 0 0M60 30c0 -8 0 -8 0 0" stroke="#7a5aa0" stroke-width="3"/></g>'},
+ 13:{sky:"#efe6f4",g1:"#9472b8",g2:"#6f4f97",motif:'<g transform="translate(200,150)"><rect x="-60" y="-30" width="14" height="70" fill="#b5462f"/><rect x="46" y="-30" width="14" height="70" fill="#b5462f"/><rect x="-74" y="-34" width="148" height="12" rx="3" fill="#cf5a40"/><rect x="-66" y="-18" width="132" height="9" fill="#cf5a40"/><path d="M-80 -34 Q0 -52 80 -34" fill="none" stroke="#8a3322" stroke-width="6"/></g>'},
+ 14:{sky:"#dff0e2",g1:"#8fc4f0",g2:"#5a8a3c",motif:'<g transform="translate(200,150)"><path d="M-150 30 L-80 -34 L-20 30Z" fill="#cfe0ef"/><path d="M-40 30 L40 -50 L120 30Z" fill="#b9d2e8"/><path d="M10 -28 L40 -50 L70 -28Z" fill="#fff"/><ellipse cx="0" cy="34" rx="150" ry="14" fill="#7bbf6a" opacity=".5"/><g fill="#f4a6c0"><circle cx="-70" cy="20" r="5"/><circle cx="-54" cy="14" r="5"/><circle cx="70" cy="22" r="5"/><circle cx="86" cy="16" r="5"/></g></g>'},
+ 15:{sky:"#d6eeeb",g1:"#46b3a4",g2:"#2f8d80",motif:'<g transform="translate(200,142)"><rect x="-90" y="-6" width="180" height="62" rx="8" fill="#cfeae6"/><circle cx="-40" cy="20" r="9" fill="#2f8d80"/><circle cx="40" cy="20" r="9" fill="#2f8d80"/><rect x="-34" y="17" width="74" height="6" rx="3" fill="#2f8d80"/><path d="M0 -40 l10 18 -20 0z" fill="#46b3a4"/><circle cx="0" cy="-46" r="8" fill="#ffe89a"/></g>'},
+ 16:{sky:"#dcefe9",g1:"#46b3a4",g2:"#2f8d80",motif:'<g transform="translate(200,140)"><rect x="-78" y="-20" width="156" height="76" rx="8" fill="#fff"/><rect x="-78" y="-20" width="156" height="16" fill="#2f8d80"/><rect x="-10" y="8" width="20" height="44" fill="#e0533a"/><rect x="-26" y="24" width="52" height="12" fill="#e0533a"/><circle cx="-48" cy="-2" r="6" fill="#cdeee8"/><circle cx="48" cy="-2" r="6" fill="#cdeee8"/></g>'}
+};
+function illusSVG(n){
+  const sc=SCENE[n]||SCENE[1];
+  return '<svg viewBox="0 0 400 200" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice">'+
+    '<defs><linearGradient id="sky'+n+'" x1="0" y1="0" x2="0" y2="1">'+
+    '<stop offset="0" stop-color="'+sc.sky+'"/><stop offset="1" stop-color="#fbfaf6"/></linearGradient></defs>'+
+    '<rect width="400" height="200" fill="url(#sky'+n+')"/>'+
+    '<ellipse cx="60" cy="40" rx="46" ry="18" fill="#fff" opacity=".5"/>'+
+    '<ellipse cx="320" cy="30" rx="38" ry="14" fill="#fff" opacity=".45"/>'+
+    sc.motif+
+    '<rect y="178" width="400" height="22" fill="'+sc.g2+'" opacity=".45"/>'+
+    '</svg>';
+}
+
+/* ===== SECTION 1 : number dots on static map ===== */
+(function(){
+  const svg=document.getElementById('s1pins');
+  SPOTS.forEach(s=>{
+    const cat=CAT[s.cat],r=s.cat==="start"?26:21;
+    const g=document.createElementNS("http://www.w3.org/2000/svg","g");
+    g.setAttribute("transform","translate("+s.x+" "+s.y+")");
+    g.innerHTML=`<circle r="${r}" fill="${cat.c}"/><circle class="ring" r="${r}"/>
+      <text class="numdot ${s.cat==='start'?'sg':''}" y="1">${s.cat==='start'?'S/G':s.n}</text>`;
+    svg.appendChild(g);
+  });
+})();
+
+/* ===== SECTION 2 : cards ===== */
+(function(){
+  const wrap=document.getElementById('s2list');
+  SPOTS.forEach(s=>{
+    const cat=CAT[s.cat];
+    const c=document.createElement('article');c.className='card';c.id='spot-'+s.n;
+    const feats=FEAT[s.n];
+    const featHTML = feats
+      ? `<ul class="feat">${feats.map(f=>`<li><b>${f[0]}</b><span>${f[1]}</span></li>`).join('')}</ul>`
+      : `<p class="desc">${s.lead}</p>`;
+    c.innerHTML=`
+      <div class="card-photo">
+        <div class="illus">${illusSVG(s.n)}</div>
+        <div class="card-no ${s.cat==='start'?'sg':''}" style="background:${cat.c}">${s.cat==='start'?'S/G':s.n}</div>
+        <div class="card-cat">${cat.label}</div>
+        <div class="ph-tag">イメージ画像</div>
+      </div>
+      <div class="card-bd">
+        <h3>${s.name}</h3>
+        <div class="read">${s.read}</div>
+        ${s.copy?`<p class="copy">${s.copy}</p>`:''}
+        ${featHTML}
+        <div class="card-tags">${s.tags.map(t=>`<span class="t">${t}</span>`).join('')}</div>
+      </div>`;
+    wrap.appendChild(c);
+  });
+})();
+
+/* ===== SECTION 3 : interactive ===== */
+const pinLayer=document.getElementById('pinLayer');
+SPOTS.forEach(s=>{
+  const cat=CAT[s.cat],r=s.cat==="start"?26:21;
+  const g=document.createElementNS("http://www.w3.org/2000/svg","g");
+  g.setAttribute("class","pin"+(s.cat==="start"?" start":""));
+  g.setAttribute("transform","translate("+s.x+" "+s.y+")");g.dataset.n=s.n;
+  g.innerHTML=`<circle class="pulse" r="${r}" fill="${cat.c}"></circle>
+    <g class="disc"><circle r="${r}" fill="${cat.c}"/><circle class="ring" r="${r}"/>
+    <text class="num" y="1">${s.cat==="start"?"S/G":s.n}</text></g>`;
+  g.addEventListener('click',e=>{e.stopPropagation();open(s.n);});
+  pinLayer.appendChild(g);
+});
+const reel=document.getElementById('reel');
+SPOTS.forEach(s=>{
+  const cat=CAT[s.cat];const c=document.createElement('div');
+  c.className='chip';c.dataset.n=s.n;
+  c.innerHTML=`<div class="cn ${s.cat==='start'?'cnm':''}" style="background:${cat.c}">${s.cat==='start'?'S/G':s.n}</div>
+    <div class="ct"><b>${s.name.length>9?s.name.slice(0,9)+'…':s.name}</b><span>${cat.label.split(' ')[0]}</span></div>`;
+  c.addEventListener('click',()=>open(s.n));
+  reel.appendChild(c);
+});
+
+/* pan/zoom (scoped to stagewrap) */
+const stage=document.getElementById('stage'),canvas=document.getElementById('canvas');
+const stagewrap=document.querySelector('.stagewrap');
+let scale=0.5,tx=0,ty=0;const MINS=0.25,MAXS=3;
+function apply(){canvas.style.transform=`translate(-50%,-50%) translate(${tx}px,${ty}px) scale(${scale})`;}
+function fit(){const w=stagewrap.clientWidth,h=stagewrap.clientHeight;
+  scale=Math.min(w/IMW,h/IMH)*1.02;scale=Math.max(MINS,Math.min(MAXS,scale));tx=0;ty=0;apply();}
+window.addEventListener('resize',fit);
+
+let isPan=false,sx=0,sy=0,stx=0,sty=0;
+stage.addEventListener('pointerdown',e=>{isPan=true;sx=e.clientX;sy=e.clientY;stx=tx;sty=ty;stage.setPointerCapture(e.pointerId);});
+stage.addEventListener('pointermove',e=>{if(!isPan)return;tx=stx+(e.clientX-sx);ty=sty+(e.clientY-sy);apply();});
+stage.addEventListener('pointerup',()=>isPan=false);
+stage.addEventListener('pointercancel',()=>isPan=false);
+stage.addEventListener('wheel',e=>{e.preventDefault();const d=e.deltaY<0?1.12:0.89;scale=Math.max(MINS,Math.min(MAXS,scale*d));apply();},{passive:false});
+let pinchD=0,pinchS=1;
+stage.addEventListener('touchstart',e=>{if(e.touches.length===2){const dx=e.touches[0].clientX-e.touches[1].clientX,dy=e.touches[0].clientY-e.touches[1].clientY;pinchD=Math.hypot(dx,dy);pinchS=scale;}});
+stage.addEventListener('touchmove',e=>{if(e.touches.length===2){e.preventDefault();const dx=e.touches[0].clientX-e.touches[1].clientX,dy=e.touches[0].clientY-e.touches[1].clientY,d=Math.hypot(dx,dy);if(pinchD){scale=Math.max(MINS,Math.min(MAXS,pinchS*(d/pinchD)));apply();}}},{passive:false});
+stage.addEventListener('touchend',()=>pinchD=0);
+document.getElementById('zin').onclick=()=>{scale=Math.min(MAXS,scale*1.25);apply();};
+document.getElementById('zout').onclick=()=>{scale=Math.max(MINS,scale*0.8);apply();};
+document.getElementById('fit').onclick=fit;
+
+/* sheet */
+const sheet=document.getElementById('sheet'),scrim=document.getElementById('scrim');
+let current=1;
+function open(n){
+  current=n;const s=SPOTS.find(x=>x.n===n),cat=CAT[s.cat];
+  document.getElementById('sNo').textContent=String(n).padStart(2,'0');
+  const catEl=document.getElementById('sCat');catEl.textContent=cat.label;catEl.style.color=cat.c;catEl.style.background=cat.bg;
+  document.getElementById('sName').textContent=s.name;
+  document.getElementById('sRead').textContent=s.read;
+  document.getElementById('sCopy').textContent=s.copy;
+  document.getElementById('sLead').textContent=s.lead;
+  const tg=document.getElementById('sTags');tg.innerHTML='';
+  s.tags.forEach(t=>{const e=document.createElement('span');e.className='tag';e.textContent=t;tg.appendChild(e);});
+  document.getElementById('prevBtn').disabled=n<=1;
+  const nx=SPOTS.find(x=>x.n===n+1);
+  document.getElementById('nextName').textContent=nx?nx.name.slice(0,5):'ゴール';
+  document.getElementById('nextBtn').querySelector('span').firstChild.textContent=nx?'次へ ':'完走！';
+  sheet.classList.add('open');scrim.classList.add('open');
+  sheet.querySelector('.sheet-bd').scrollTop=0;highlight(n);
+}
+function close(){sheet.classList.remove('open');scrim.classList.remove('open');clearHi();}
+scrim.onclick=close;document.getElementById('grab').onclick=close;
+document.getElementById('prevBtn').onclick=()=>{if(current>1)open(current-1);};
+document.getElementById('nextBtn').onclick=()=>{current<16?open(current+1):close();};
+function highlight(n){clearHi();
+  document.querySelectorAll('.pin').forEach(p=>{if(+p.dataset.n===n)p.classList.add('active');});
+  document.querySelectorAll('.chip').forEach(c=>{if(+c.dataset.n===n){c.classList.add('active');c.scrollIntoView({behavior:'smooth',inline:'center',block:'nearest'});}});
+  const s=SPOTS.find(x=>x.n===n);tx=(IMW/2 - s.x)*scale;ty=(IMH/2 - s.y)*scale;apply();
+}
+function clearHi(){document.querySelectorAll('.pin.active').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.chip.active').forEach(c=>c.classList.remove('active'));}
+fit();
+</script>
+</body>
+</html>
